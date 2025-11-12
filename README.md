@@ -8,7 +8,7 @@ A modern, interactive web application for creating, editing, and managing networ
 [![React Router](https://img.shields.io/badge/React%20Router-v6-orange?logo=react-router)](https://reactrouter.com)
 [![ReactFlow](https://img.shields.io/badge/ReactFlow-v11.7-brightgreen?logo=react)](https://reactflow.dev)
 [![Vite](https://img.shields.io/badge/Vite-v4.5-purple?logo=vite)](https://vitejs.dev)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![License](https://img.shields.io/badge/License-КНИТУ-КАИ-green)](LICENSE)
 
 [Features](#-key-features) • [Quick Start](#-getting-started) • [Documentation](#-documentation) • [Architecture](#-architecture)
 
