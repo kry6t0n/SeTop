@@ -193,31 +193,31 @@ Network-Topology-Visualizer/
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── Canvas/
-│   │   │   │   ├── NetworkCanvas.jsx         # Main canvas with ReactFlow
-│   │   │   │   ├── Toolbar.jsx               # Property editor sidebar
+│   │   │   │   ├── NetworkCanvas.tsx         # Main canvas with ReactFlow
+│   │   │   │   ├── Toolbar.tsx               # Property editor sidebar
 │   │   │   │   └── CustomNodes/
-│   │   │   │       └── CustomNode.jsx        # Device node rendering
+│   │   │   │       └── CustomNode.tsx        # Device node rendering
 │   │   │   └── Layout/
-│   │   │       └── Header.jsx                # Navigation header
+│   │   │       └── Header.tsx                # Navigation header
 │   │   ├── pages/
-│   │   │   ├── Login.jsx                     # Authentication page
-│   │   │   ├── Dashboard.jsx                 # Landing page
-│   │   │   ├── Editor.jsx                    # Main editor page
-│   │   │   ├── Account.jsx                   # User profile & projects
-│   │   │   └── Admin.jsx                     # Admin panel
+│   │   │   ├── Login.tsx                     # Authentication page
+│   │   │   ├── Dashboard.tsx                 # Landing page
+│   │   │   ├── Editor.tsx                    # Main editor page
+│   │   │   ├── Account.tsx                   # User profile & projects
+│   │   │   └── Admin.tsx                     # Admin panel
 │   │   ├── utils/
-│   │   │   ├── connectionLogic.js            # Connection types & validation
-│   │   │   ├── projectService.js             # localStorage operations
-│   │   │   ├── exportUtils.js                # Import/Export JSON
-│   │   │   └── validation.js                 # Form validation helpers
+│   │   │   ├── connectionLogic.ts            # Connection types & validation
+│   │   │   ├── projectService.ts             # localStorage operations
+│   │   │   ├── exportUtils.ts                # Import/Export JSON
+│   │   │   └── validation.ts                 # Form validation helpers
 │   │   ├── contexts/
-│   │   │   └── AuthContext.jsx               # Authentication state
+│   │   │   └── AuthContext.tsx               # Authentication state
 │   │   ├── hooks/
-│   │   │   └── useLocalStorage.js            # localStorage React hook
+│   │   │   └── useLocalStorage.ts            # localStorage React hook
 │   │   ├── styles/
 │   │   │   └── *.css                         # Component styles
-│   │   ├── App.jsx                           # Root component
-│   │   └── main.jsx                          # Entry point
+│   │   ├── App.tsx                           # Root component
+│   │   └── main.tsx                          # Entry point
 │   ├── index.html                            # HTML template
 │   ├── package.json                          # Dependencies
 │   ├── vite.config.js                        # Build configuration
