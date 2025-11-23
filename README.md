@@ -389,3 +389,8 @@ For issues, questions, or feature requests:
 [Report Bug](https://github.com/yourusername/Network-Topology-Visualizer/issues) • [Request Feature](https://github.com/yourusername/Network-Topology-Visualizer/issues)
 
 </div>
+> **Лабораторная работа 6**
+> 
+> - [Архитектурные требования](./architecture.md)
+> - [Функциональные требования MVP](./mvp.md)
+> - [Исходный Pull Request](https://github.com/kry6t0n/SeTop/pull/1)
