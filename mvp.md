@@ -1,6 +1,3 @@
-
-## 2. Файл `mvp.md`
-
 ```markdown
 # Функциональные требования MVP для Network Topology Visualizer
 
