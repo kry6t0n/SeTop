@@ -103,7 +103,7 @@ Network-Topology-Visualizer/
   "axios": "^1.4.0"
 }
 
-Библиотека компонентов (ui-library)
+## Библиотека компонентов (ui-library)
 
 {
   "react": "^18.2.0",
