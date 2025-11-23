@@ -3,7 +3,7 @@
 ## Структура проекта
 
 Проект использует монорепозиторий со следующей структурой:
-
+```
 Network-Topology-Visualizer/
 ├── 📦 frontend/ # Основное приложение
 │ ├── src/
@@ -88,7 +88,7 @@ Network-Topology-Visualizer/
 ├── SETUP.md
 ├── NETWORK_LOGIC.md
 └── CHECKLIST.md
-
+```
 
 ## Используемые библиотеки
 
