@@ -1,37 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import Header from '../components/Layout/Header';
-import '../styles/Admin.css';
+import React, { useState, useEffect } from 'react'
+
+import { useNavigate } from 'react-router-dom'
+
+import Header from '../components/Layout/Header'
+import { useAuth } from '../contexts/AuthContext'
+import '../styles/Admin.css'
 
 const Admin = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
   const [stats, setStats] = useState({
     totalUsers: 3,
     totalProjects: 0,
     totalNodes: 0
-  });
-  const [allProjects, setAllProjects] = useState([]);
-  const [activeTab, setActiveTab] = useState('overview');
+  })
+  const [allProjects, setAllProjects] = useState([])
+  const [activeTab, setActiveTab] = useState('overview')
 
   useEffect(() => {
     // Проверяем, является ли пользователь админом
     if (user?.role !== 'Administrator') {
-      navigate('/');
-      return;
+      navigate('/')
+
+      return
     }
 
-    loadAdminData();
-  }, [user, navigate]);
+    loadAdminData()
+  }, [user, navigate])
 
   const loadAdminData = () => {
     try {
       // Получаем все проекты из localStorage
-      const storageData = JSON.parse(localStorage.getItem('network_projects') || '{}');
-      const projects = [];
-      let totalProjects = 0;
-      let totalNodes = 0;
+      const storageData = JSON.parse(localStorage.getItem('network_projects') || '{}')
+      const projects = []
+      let totalProjects = 0
+      let totalNodes = 0
 
       Object.entries(storageData).forEach(([userId, userProjects]) => {
         userProjects.forEach(project => {
@@ -39,42 +42,43 @@ const Admin = () => {
             ...project,
             userId,
             ownerName: `User ${userId.substring(0, 4)}`
-          });
-          totalProjects++;
-          totalNodes += project.nodes?.length || 0;
-        });
-      });
+          })
+          totalProjects++
+          totalNodes += project.nodes?.length || 0
+        })
+      })
 
-      setAllProjects(projects);
+      setAllProjects(projects)
       setStats({
         totalUsers: 3, // Фиксированное количество
         totalProjects,
         totalNodes
-      });
+      })
     } catch (error) {
-      console.error('Error loading admin data:', error);
+      console.error('Error loading admin data:', error)
     }
-  };
+  }
 
   const handleDeleteProject = (projectId, userId) => {
     try {
-      const storageData = JSON.parse(localStorage.getItem('network_projects') || '{}');
+      const storageData = JSON.parse(localStorage.getItem('network_projects') || '{}')
+
       if (storageData[userId]) {
-        storageData[userId] = storageData[userId].filter(p => p.id !== projectId);
-        localStorage.setItem('network_projects', JSON.stringify(storageData));
-        loadAdminData();
+        storageData[userId] = storageData[userId].filter(p => p.id !== projectId)
+        localStorage.setItem('network_projects', JSON.stringify(storageData))
+        loadAdminData()
       }
     } catch (error) {
-      console.error('Error deleting project:', error);
+      console.error('Error deleting project:', error)
     }
-  };
+  }
 
   const handleClearAllData = () => {
     if (window.confirm('Are you sure? This will delete ALL projects!')) {
-      localStorage.removeItem('network_projects');
-      loadAdminData();
+      localStorage.removeItem('network_projects')
+      loadAdminData()
     }
-  };
+  }
 
   return (
     <div className="admin-page">
@@ -89,8 +93,8 @@ const Admin = () => {
           <button 
             className="btn-logout"
             onClick={() => {
-              logout();
-              navigate('/login');
+              logout()
+              navigate('/login')
             }}
           >
             Logout
@@ -279,7 +283,7 @@ const Admin = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Admin;
+export default Admin

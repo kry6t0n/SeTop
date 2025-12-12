@@ -1,34 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import Header from '../components/Layout/Header';
-import NetworkCanvas from '../components/Canvas/NetworkCanvas';
-import { useAuth } from '../contexts/AuthContext';
-import projectService from '../utils/projectService';
-import { validateConnections } from '../utils/connectionLogic';
-import '../styles/Editor.css';
+import React, { useState, useEffect } from 'react'
+
+import NetworkCanvas from '../components/Canvas/NetworkCanvas'
+import Header from '../components/Layout/Header'
+import { useAuth } from '../contexts/AuthContext'
+import { validateConnections } from '../utils/connectionLogic'
+import projectService from '../utils/projectService'
+import '../styles/Editor.css'
 
 const Editor = () => {
-  const { user } = useAuth();
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [projectName, setProjectName] = useState('');
-  const [saveStatus, setSaveStatus] = useState('');
-  const [saveError, setSaveError] = useState('');
+  const { user } = useAuth()
+  const [showSaveDialog, setShowSaveDialog] = useState(false)
+  const [projectName, setProjectName] = useState('')
+  const [saveStatus, setSaveStatus] = useState('')
+  const [saveError, setSaveError] = useState('')
   
   useEffect(() => {
     // Слушаем событие сохранения из Toolbar
     const handleSaveEvent = () => {
-      setShowSaveDialog(true);
-      setSaveStatus('');
-      setSaveError('');
-    };
+      setShowSaveDialog(true)
+      setSaveStatus('')
+      setSaveError('')
+    }
     
-    window.addEventListener('saveProject', handleSaveEvent);
-    return () => window.removeEventListener('saveProject', handleSaveEvent);
-  }, []);
+    window.addEventListener('saveProject', handleSaveEvent)
+
+    return () => window.removeEventListener('saveProject', handleSaveEvent)
+  }, [])
   
   // Функция для передачи сохранения из NetworkCanvas
   const handleSaveProject = (nodes, edges) => {
-    setShowSaveDialog(true);
-  };
+    setShowSaveDialog(true)
+  }
 
   const checkDuplicateIPs = (nodes) => {
     // Фильтруем устройства (не сеть) с IP адресами
@@ -36,33 +38,34 @@ const Editor = () => {
       node.data.type !== 'network' && 
       node.data.ip && 
       node.data.ip.trim() !== ''
-    );
+    )
     
-    const ips = deviceNodes.map(node => node.data.ip);
-    const duplicates = ips.filter((ip, index) => ips.indexOf(ip) !== index);
+    const ips = deviceNodes.map(node => node.data.ip)
+    const duplicates = ips.filter((ip, index) => ips.indexOf(ip) !== index)
     
     if (duplicates.length > 0) {
       return {
         hasDuplicates: true,
         duplicates: [...new Set(duplicates)],
         hasInvalidIPs: false
-      };
+      }
     }
 
     // Проверяем на невалидные IP адреса
-    const invalidIPs = [];
-    const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+    const invalidIPs = []
+    const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/
     
     deviceNodes.forEach(node => {
       if (!ipRegex.test(node.data.ip)) {
-        invalidIPs.push(node.data.ip);
+        invalidIPs.push(node.data.ip)
       } else {
-        const parts = node.data.ip.split('.');
+        const parts = node.data.ip.split('.')
+
         if (!parts.every(part => parseInt(part) >= 0 && parseInt(part) <= 255)) {
-          invalidIPs.push(node.data.ip);
+          invalidIPs.push(node.data.ip)
         }
       }
-    });
+    })
 
     if (invalidIPs.length > 0) {
       return {
@@ -70,65 +73,70 @@ const Editor = () => {
         duplicates: [],
         hasInvalidIPs: true,
         invalidIPs: [...new Set(invalidIPs)]
-      };
+      }
     }
 
     return { 
       hasDuplicates: false, 
       duplicates: [],
       hasInvalidIPs: false
-    };
-  };
+    }
+  }
 
   const confirmSaveProject = (nodes, edges) => {
-    setSaveError('');
+    setSaveError('')
 
     if (!projectName.trim()) {
-      setSaveStatus('error');
-      setSaveError('Project name is required');
-      return;
+      setSaveStatus('error')
+      setSaveError('Project name is required')
+
+      return
     }
 
     // Проверяем на дубликаты и невалидные IP
-    const ipCheck = checkDuplicateIPs(nodes);
+    const ipCheck = checkDuplicateIPs(nodes)
     
     if (ipCheck.hasDuplicates) {
-      setSaveStatus('error');
-      setSaveError(`Duplicate IP addresses found: ${ipCheck.duplicates.join(', ')}`);
-      return;
+      setSaveStatus('error')
+      setSaveError(`Duplicate IP addresses found: ${ipCheck.duplicates.join(', ')}`)
+
+      return
     }
 
     if (ipCheck.hasInvalidIPs) {
-      setSaveStatus('error');
-      setSaveError(`Invalid IP addresses found: ${ipCheck.invalidIPs.join(', ')}`);
-      return;
+      setSaveStatus('error')
+      setSaveError(`Invalid IP addresses found: ${ipCheck.invalidIPs.join(', ')}`)
+
+      return
     }
 
     // Проверяем корректность соединений
-    const connectionValidation = validateConnections(nodes, edges);
+    const connectionValidation = validateConnections(nodes, edges)
+
     if (!connectionValidation.valid) {
-      setSaveStatus('error');
-      setSaveError(`Connection errors:\n${connectionValidation.errors.join('\n')}`);
-      return;
+      setSaveStatus('error')
+      setSaveError(`Connection errors:\n${connectionValidation.errors.join('\n')}`)
+
+      return
     }
 
     try {
       projectService.saveProject(user.id, projectName, {
         nodes,
         edges
-      });
-      setSaveStatus('success');
-      setProjectName('');
+      })
+      setSaveStatus('success')
+      setProjectName('')
       setTimeout(() => {
-        setShowSaveDialog(false);
-        setSaveStatus('');
-        setSaveError('');
-      }, 2000);
+        setShowSaveDialog(false)
+        setSaveStatus('')
+        setSaveError('')
+      }, 2000)
     } catch (error) {
-      setSaveStatus('error');
-      setSaveError('Failed to save project');
+      setSaveStatus('error')
+      setSaveError('Failed to save project')
     }
-  };
+  }
 
   return (
     <div className="editor-container">
@@ -150,9 +158,10 @@ const Editor = () => {
               className="project-name-input"
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
-                  const nodes = window.__editorNodes || [];
-                  const edges = window.__editorEdges || [];
-                  confirmSaveProject(nodes, edges);
+                  const nodes = window.__editorNodes || []
+                  const edges = window.__editorEdges || []
+
+                  confirmSaveProject(nodes, edges)
                 }
               }}
             />
@@ -166,9 +175,9 @@ const Editor = () => {
               <button 
                 className="btn-cancel"
                 onClick={() => {
-                  setShowSaveDialog(false);
-                  setSaveStatus('');
-                  setSaveError('');
+                  setShowSaveDialog(false)
+                  setSaveStatus('')
+                  setSaveError('')
                 }}
               >
                 Отменить
@@ -176,9 +185,10 @@ const Editor = () => {
               <button 
                 className="btn-save"
                 onClick={() => {
-                  const nodes = window.__editorNodes || [];
-                  const edges = window.__editorEdges || [];
-                  confirmSaveProject(nodes, edges);
+                  const nodes = window.__editorNodes || []
+                  const edges = window.__editorEdges || []
+
+                  confirmSaveProject(nodes, edges)
                 }}
               >
                 Сохранить
@@ -188,7 +198,7 @@ const Editor = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Editor;
+export default Editor

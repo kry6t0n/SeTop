@@ -13,7 +13,9 @@
     "build:ui": "npm --prefix ui-library run build",
     "build:frontend": "npm --prefix frontend run build",
     "preview": "npm --prefix frontend run preview",
-    "install:all": "npm install && npm --prefix frontend install && npm --prefix ui-library install"
+    "install:all": "npm install",
+    "clean": "rmdir /s /q node_modules 2>nul & rmdir /s /q frontend\\node_modules 2>nul & rmdir /s /q ui-library\\node_modules 2>nul & del package-lock.json 2>nul & del frontend\\package-lock.json 2>nul & del ui-library\\package-lock.json 2>nul",
+    "reinstall": "npm run clean && npm install"
   },
   "devDependencies": {}
 }

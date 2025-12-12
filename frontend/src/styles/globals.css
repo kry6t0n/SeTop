@@ -1,3 +1,26 @@
+/* Basic globals restored to ensure header and layout render correctly */
+:root {
+  --bg: #0b1220;
+  --surface: #0f1724;
+  --muted: #9ca3af;
+  --accent: #60a5fa;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: var(--bg);
+  color: #e6eef8;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app { min-height: 100vh; }
+
+/* If header styles are missing, ensure header slot has space */
+.site-header + .app-main { margin-top: 0; }
 * {
   margin: 0;
   padding: 0;

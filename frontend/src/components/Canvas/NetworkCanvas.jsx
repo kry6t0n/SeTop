@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react'
+
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -7,46 +8,47 @@ import ReactFlow, {
   useEdgesState,
   addEdge,
   ReactFlowProvider,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
+} from 'reactflow'
+import 'reactflow/dist/style.css'
 
-import CustomNode from './CustomNodes/CustomNode';
-import Toolbar from './Toolbar';
+import CustomNode from './CustomNodes/CustomNode'
+import Toolbar from './Toolbar'
 import { 
   CONNECTION_TYPES,
   canConnectNodes,
   getSuggestedConnectionType,
   getConnectionStyle
-} from '../../utils/connectionLogic';
+} from '../../utils/connectionLogic'
 
 const nodeTypes = {
   custom: CustomNode,
-};
+}
 
-const initialNodes = [];
-const initialEdges = [];
+const initialNodes = []
+const initialEdges = []
 
 function Flow() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [selectedNode, setSelectedNode] = useState(null);
-  const [selectedEdge, setSelectedEdge] = useState(null);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const [selectedNode, setSelectedNode] = useState(null)
+  const [selectedEdge, setSelectedEdge] = useState(null)
 
   const onConnect = useCallback(
     (params) => {
-      const sourceNode = nodes.find(n => n.id === params.source);
-      const targetNode = nodes.find(n => n.id === params.target);
+      const sourceNode = nodes.find(n => n.id === params.source)
+      const targetNode = nodes.find(n => n.id === params.target)
 
       // Проверяем совместимость
-      const compatibility = canConnectNodes(sourceNode, targetNode);
+      const compatibility = canConnectNodes(sourceNode, targetNode)
       
       if (!compatibility.allowed) {
-        alert(`❌ Cannot connect: ${compatibility.message}`);
-        return;
+        alert(`❌ Cannot connect: ${compatibility.message}`)
+
+        return
       }
 
       // Определяем тип соединения
-      const suggestedType = getSuggestedConnectionType(sourceNode, targetNode);
+      const suggestedType = getSuggestedConnectionType(sourceNode, targetNode)
 
       // Добавляем соединение с типом и стилем
       const newEdge = {
@@ -57,25 +59,25 @@ function Flow() {
           description: ''
         },
         style: getConnectionStyle(suggestedType, 'active')
-      };
+      }
 
-      setEdges((eds) => addEdge(newEdge, eds));
-      setSelectedNode(null);
-      setSelectedEdge(newEdge);
+      setEdges((eds) => addEdge(newEdge, eds))
+      setSelectedNode(null)
+      setSelectedEdge(newEdge)
     },
     [nodes, setEdges],
-  );
+  )
 
   const onNodeClick = useCallback((event, node) => {
-    setSelectedNode(node);
-    setSelectedEdge(null);
-  }, []);
+    setSelectedNode(node)
+    setSelectedEdge(null)
+  }, [])
 
   const onEdgeClick = useCallback((event, edge) => {
-    event.stopPropagation();
-    setSelectedEdge(edge);
-    setSelectedNode(null);
-  }, []);
+    event.stopPropagation()
+    setSelectedEdge(edge)
+    setSelectedNode(null)
+  }, [])
 
   const addNode = useCallback((type) => {
     const newNode = {
@@ -89,9 +91,10 @@ function Flow() {
         mask: type === 'network' ? '' : '255.255.255.0',
         status: 'active'
       },
-    };
-    setNodes((nds) => nds.concat(newNode));
-  }, [setNodes]);
+    }
+
+    setNodes((nds) => nds.concat(newNode))
+  }, [setNodes])
 
   return (
     <div style={{ display: 'flex', height: '100%' }}>
@@ -123,7 +126,7 @@ function Flow() {
         </ReactFlow>
       </div>
     </div>
-  );
+  )
 }
 
 export default function NetworkCanvas() {
@@ -131,5 +134,5 @@ export default function NetworkCanvas() {
     <ReactFlowProvider>
       <Flow />
     </ReactFlowProvider>
-  );
+  )
 }

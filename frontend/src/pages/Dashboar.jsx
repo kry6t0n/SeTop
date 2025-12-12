@@ -1,11 +1,13 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import Header from '../components/Layout/Header';
-import '../styles/Dashboard.css';
+import React from 'react'
+
+import { Link } from 'react-router-dom'
+
+import Header from '../components/Layout/Header'
+import { useAuth } from '../contexts/AuthContext'
+import '../styles/Dashboard.css'
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user } = useAuth()
 
   const quickActions = [
     {
@@ -40,7 +42,7 @@ const Dashboard = () => {
       badge: 'Coming Soon',
       color: 'muted'
     }
-  ];
+  ]
 
   return (
     <div className="dashboard">
@@ -60,8 +62,8 @@ const Dashboard = () => {
               className="action-card"
               onClick={e => {
                 if (action.link === '#') {
-                  e.preventDefault();
-                  alert('This feature is coming soon!');
+                  e.preventDefault()
+                  alert('This feature is coming soon!')
                 }
               }}
             >
@@ -92,7 +94,7 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

@@ -1,19 +1,21 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react'
 
-const AuthContext = createContext();
+const AuthContext = createContext()
 
 // Получаем пользователей из localStorage или используем стандартные
 const getInitialUsers = () => {
-  const stored = localStorage.getItem('all_users');
+  const stored = localStorage.getItem('all_users')
+
   if (stored) {
     try {
-      return JSON.parse(stored);
+      return JSON.parse(stored)
     } catch {
-      return getDefaultUsers();
+      return getDefaultUsers()
     }
   }
-  return getDefaultUsers();
-};
+
+  return getDefaultUsers()
+}
 
 const getDefaultUsers = () => [
   {
@@ -40,88 +42,104 @@ const getDefaultUsers = () => [
     role: 'User',
     createdAt: '2024-01-01'
   }
-];
+]
 
-let USERS = getInitialUsers();
+let USERS = getInitialUsers()
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [authError, setAuthError] = useState('');
+  const [user, setUser] = useState(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [authError, setAuthError] = useState('')
 
   // Проверяем localStorage при загрузке
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem('user')
+
     if (storedUser) {
       try {
-        const userData = JSON.parse(storedUser);
+        const userData = JSON.parse(storedUser)
         // Проверяем, существует ли еще пользователь
-        const userExists = USERS.find(u => u.username === userData.username);
+        const userExists = USERS.find(u => u.username === userData.username)
+
         if (userExists) {
-          setUser(userData);
-          setIsAuthenticated(true);
+          setUser(userData)
+          setIsAuthenticated(true)
         } else {
-          localStorage.removeItem('user');
+          localStorage.removeItem('user')
         }
       } catch (error) {
-        console.error('Error parsing stored user:', error);
-        localStorage.removeItem('user');
+        console.error('Error parsing stored user:', error)
+        localStorage.removeItem('user')
       }
     }
-    setIsLoading(false);
-  }, []);
+    setIsLoading(false)
+  }, [])
 
   const login = (username, password) => {
-    setAuthError('');
+    setAuthError('')
     
     // Находим пользователя
-    const user = USERS.find(u => u.username === username && u.password === password);
+    const user = USERS.find(u => u.username === username && u.password === password)
     
     if (user) {
       // Не храним пароль в состоянии
-      const { password: _, ...userWithoutPassword } = user;
-      setUser(userWithoutPassword);
-      setIsAuthenticated(true);
-      localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-      return { success: true };
+      const { password: _, ...userWithoutPassword } = user
+
+      setUser(userWithoutPassword)
+      setIsAuthenticated(true)
+      localStorage.setItem('user', JSON.stringify(userWithoutPassword))
+
+      return { success: true }
     } else {
-      const error = 'Invalid username or password';
-      setAuthError(error);
-      return { success: false, error };
+      const error = 'Invalid username or password'
+
+      setAuthError(error)
+
+      return { success: false, error }
     }
-  };
+  }
 
   const register = (username, password, email) => {
-    setAuthError('');
+    setAuthError('')
     
     // Валидация
     if (!username.trim() || !password.trim() || !email.trim()) {
-      const error = 'All fields are required';
-      setAuthError(error);
-      return { success: false, error };
+      const error = 'All fields are required'
+
+      setAuthError(error)
+
+      return { success: false, error }
     }
 
     if (password.length < 6) {
-      const error = 'Password must be at least 6 characters';
-      setAuthError(error);
-      return { success: false, error };
+      const error = 'Password must be at least 6 characters'
+
+      setAuthError(error)
+
+      return { success: false, error }
     }
 
     // Проверяем, не занят ли username
-    const userExists = USERS.find(u => u.username === username);
+    const userExists = USERS.find(u => u.username === username)
+
     if (userExists) {
-      const error = 'Username already exists';
-      setAuthError(error);
-      return { success: false, error };
+      const error = 'Username already exists'
+
+      setAuthError(error)
+
+      return { success: false, error }
     }
 
     // Проверяем, не занят ли email
-    const emailExists = USERS.find(u => u.email === email);
+    const emailExists = USERS.find(u => u.email === email)
+
     if (emailExists) {
-      const error = 'Email already registered';
-      setAuthError(error);
-      return { success: false, error };
+      const error = 'Email already registered'
+
+      setAuthError(error)
+
+      return { success: false, error }
     }
 
     // Создаём нового пользователя
@@ -132,33 +150,34 @@ export const AuthProvider = ({ children }) => {
       email,
       role: 'User', // По умолчанию новые пользователи имеют роль "User"
       createdAt: new Date().toISOString()
-    };
+    }
 
     // Добавляем пользователя в список
-    USERS.push(newUser);
+    USERS.push(newUser)
     
     // Сохраняем обновленный список в localStorage
     try {
-      localStorage.setItem('all_users', JSON.stringify(USERS));
+      localStorage.setItem('all_users', JSON.stringify(USERS))
     } catch (error) {
-      console.error('Error saving users:', error);
+      console.error('Error saving users:', error)
     }
 
     // Автоматически логиним пользователя
-    const { password: _, ...userWithoutPassword } = newUser;
-    setUser(userWithoutPassword);
-    setIsAuthenticated(true);
-    localStorage.setItem('user', JSON.stringify(userWithoutPassword));
+    const { password: _, ...userWithoutPassword } = newUser
+
+    setUser(userWithoutPassword)
+    setIsAuthenticated(true)
+    localStorage.setItem('user', JSON.stringify(userWithoutPassword))
     
-    return { success: true };
-  };
+    return { success: true }
+  }
 
   const logout = () => {
-    setUser(null);
-    setIsAuthenticated(false);
-    setAuthError('');
-    localStorage.removeItem('user');
-  };
+    setUser(null)
+    setIsAuthenticated(false)
+    setAuthError('')
+    localStorage.removeItem('user')
+  }
 
   // Пока загружаем данные, показываем loading
   if (isLoading) {
@@ -167,7 +186,7 @@ export const AuthProvider = ({ children }) => {
         <div className="loading-spinner"></div>
         <p>Loading...</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -182,13 +201,15 @@ export const AuthProvider = ({ children }) => {
     }}>
       {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext)
+
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider')
   }
-  return context;
-};
+
+  return context
+}

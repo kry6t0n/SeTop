@@ -1,27 +1,32 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboar';
-import Account from './pages/Account';
-import Editor from './pages/Editor';
-import Admin from './pages/Admin';
-import './styles/globals.css';
+import React from 'react'
+
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+
+import { AuthProvider, useAuth } from './contexts/AuthContext'
+import Account from './pages/Account'
+import Admin from './pages/Admin'
+import Dashboard from './pages/Dashboar'
+import Editor from './pages/Editor'
+import Login from './pages/Login'
+import './styles/globals.css'
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? children : <Navigate to="/login" />;
-};
+  const { isAuthenticated } = useAuth()
+
+  return isAuthenticated ? children : <Navigate to="/login" />
+}
 
 const AdminRoute = ({ children }) => {
-  const { isAuthenticated, user } = useAuth();
-  return isAuthenticated && user?.role === 'Administrator' ? children : <Navigate to="/" />;
-};
+  const { isAuthenticated, user } = useAuth()
+
+  return isAuthenticated && user?.role === 'Administrator' ? children : <Navigate to="/" />
+}
 
 const PublicRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-  return !isAuthenticated ? children : <Navigate to="/" />;
-};
+  const { isAuthenticated } = useAuth()
+
+  return !isAuthenticated ? children : <Navigate to="/" />
+}
 
 function App() {
   return (
@@ -60,7 +65,7 @@ function App() {
         </div>
       </Router>
     </AuthProvider>
-  );
+  )
 }
 
-export default App;
+export default App

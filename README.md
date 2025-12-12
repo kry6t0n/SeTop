@@ -5,12 +5,12 @@
 A modern, interactive web application for creating, editing, and managing network topologies with real-time validation, device management, and comprehensive connection logic.
 
 [![React](https://img.shields.io/badge/React-18.2+-blue?logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript)](https://www.typescriptlang.org)
 [![React Router](https://img.shields.io/badge/React%20Router-v6-orange?logo=react-router)](https://reactrouter.com)
 [![ReactFlow](https://img.shields.io/badge/ReactFlow-v11.7-brightgreen?logo=react)](https://reactflow.dev)
-[![Vite](https://img.shields.io/badge/Vite-v4.5-purple?logo=vite)](https://vitejs.dev)
+[![Vite](https://img.shields.io/badge/Vite-7.1-purple?logo=vite)](https://vitejs.dev)
 
-
-[Features](#-key-features) • [Quick Start](#-getting-started) • [Documentation](#-documentation) • [Architecture](#-architecture)
+[Features](#-key-features) • [Quick Start](#-getting-started) • [Architecture](#-architecture)
 
 </div>
 
@@ -48,19 +48,12 @@ Network Topology Visualizer is an interactive platform designed for network engi
 - **Inactive** 🟠 - Not in use (orange, 60% opacity)
 - **Error** 🔴 - Connection issue (red with dashing)
 
-**Connection Properties**:
-- Connection type selector
-- Status management (Active/Inactive/Error)
-- Bandwidth information
-- Custom descriptions
-- One-click delete
-
 ### 🖧 Device Management
 
 **Supported Device Types**:
-- **Router** 🖥️ - Network routing and gateway
+- **Router** 🔄 - Network routing and gateway
 - **Switch** 🔀 - LAN switching and port management
-- **Server** 📦 - Data storage and services
+- **Server** 🖥️ - Data storage and services
 - **Workstation** 💻 - User computers
 - **Network** 🌐 - Internet/External networks
 
@@ -82,15 +75,6 @@ Network Topology Visualizer is an interactive platform designed for network engi
 - Duplicate IP detection
 - Comprehensive validation on project save
 - Real-time error feedback with detailed messages
-
-**Compatibility Matrix**:
-| From | To | Physical | Routing | Logical |
-|------|-----|----------|---------|---------|
-| Router | Switch | ✅ | ❌ | ✅ |
-| Router | Router | ❌ | ✅ | ✅ |
-| Switch | Server | ✅ | ❌ | ✅ |
-| Switch | Workstation | ✅ | ❌ | ✅ |
-| Any | Network | ✅ | ✅ | ✅ |
 
 ### 📁 Project Management
 - Save network topologies to browser localStorage
@@ -116,15 +100,22 @@ Modern React application with:
 - **React 18.2+** - UI library with hooks
 - **React Router v6** - Client-side routing
 - **ReactFlow v11.7** - Advanced graph visualization
-- **Vite v4.5** - Lightning-fast build tool
-- **TypeScript** - Type checking support
+- **Vite v7.1** - Lightning-fast build tool
+- **TypeScript 5.9** - Type checking support
 - **CSS3** - Modern styling
 
 ### UI Library (`/ui-library`)
-Reusable component library:
+Reusable component library with:
 - **Button** - Customizable button component with variants
 - **Modal** - Flexible modal dialog with animations
 - **FileUpload** - File upload component with validation
+- **NetworkCanvas** - Interactive network topology canvas
+- **Toolbar** - Network device toolbar with export/import
+- **CustomNode** - Custom network device node component
+- **Header** - Navigation header with user info
+- **Utils** - Connection logic and export utilities
+
+All components are written in **TypeScript** with full type safety.
 
 ## 📦 Getting Started
 
@@ -135,20 +126,27 @@ Reusable component library:
 
 ### Installation
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/yourusername/Network-Topology-Visualizer.git
-cd Network-Topology-Visualizer
+Этот проект использует **npm workspaces** для управления зависимостями. Установка очень простая:
 
-# 2. Install frontend dependencies
-cd frontend
+```bash
+# 1. Navigate to the project directory
+cd solutions/student-6/NTV
+
+# 2. Install all dependencies (workspaces установят зависимости автоматически)
 npm install
 
 # 3. Start development server
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000` (or next available port if 3000 is busy).
+**Важно:** При использовании workspaces, `npm install` в корневой директории автоматически установит все зависимости для `frontend` и `ui-library`.
+
+Если возникают проблемы с установкой:
+1. Убедитесь, что имя пакета в `ui-library/package.json` указано как `"@my-app/ui-library"`
+2. Удалите `node_modules` и `package-lock.json` в корне и в подпапках, затем выполните `npm install` заново
+3. Проверьте версию Node.js (требуется 16+)
+
+The application will be available at `http://localhost:5173` (Vite default port).
 
 ### 🔓 Demo Credentials
 
@@ -160,109 +158,129 @@ Use these credentials to log in and explore all features:
 | engineer | engineer123 | Network Engineer | Create and edit topologies |
 | user | user123 | Regular User | View-only access |
 
-## 📚 Documentation
-
-- **[Setup Guide](./SETUP.md)** - Detailed installation, configuration, and troubleshooting
-- **[Network Logic](./NETWORK_LOGIC.md)** - Connection types, validation rules, IP compatibility matrix
-- **[Checklist](./CHECKLIST.md)** - Feature implementation status and project structure
-
 ## 🛠️ Available Commands
 
-### Development
-```bash
-npm run dev              # Start development server with HMR
-```
+### Frontend
 
-### Production
 ```bash
+cd frontend
+
+npm run dev              # Start development server with HMR
 npm run build            # Build for production with optimizations
 npm run preview          # Preview production build locally
+npm run lint             # Lint code
+npm run lint:fix         # Fix linting errors automatically
+npm run test             # Run tests
+npm run test:coverage    # Run tests with coverage report
 ```
 
-### Code Quality
+### UI Library
+
 ```bash
-npm run type-check       # Run TypeScript type checking
-npm run lint             # Lint code (if configured)
+cd ui-library
+
+npm run build            # Build library
+npm run lint             # Lint code
+npm run lint:fix         # Fix linting errors automatically
+npm run test             # Run tests
+npm run test:coverage    # Run tests with coverage report (90% threshold)
 ```
 
 ## 📁 Project Structure
 
 ```
-Network-Topology-Visualizer/
+NTV/
 ├── 📦 frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── Canvas/
-│   │   │   │   ├── NetworkCanvas.tsx         # Main canvas with ReactFlow
-│   │   │   │   ├── Toolbar.tsx               # Property editor sidebar
-│   │   │   │   └── CustomNodes/
-│   │   │   │       └── CustomNode.tsx        # Device node rendering
-│   │   │   └── Layout/
-│   │   │       └── Header.tsx                # Navigation header
-│   │   ├── pages/
-│   │   │   ├── Login.tsx                     # Authentication page
-│   │   │   ├── Dashboard.tsx                 # Landing page
-│   │   │   ├── Editor.tsx                    # Main editor page
-│   │   │   ├── Account.tsx                   # User profile & projects
-│   │   │   └── Admin.tsx                     # Admin panel
-│   │   ├── utils/
-│   │   │   ├── connectionLogic.ts            # Connection types & validation
-│   │   │   ├── projectService.ts             # localStorage operations
-│   │   │   ├── exportUtils.ts                # Import/Export JSON
-│   │   │   └── validation.ts                 # Form validation helpers
-│   │   ├── contexts/
-│   │   │   └── AuthContext.tsx               # Authentication state
-│   │   ├── hooks/
-│   │   │   └── useLocalStorage.ts            # localStorage React hook
-│   │   ├── styles/
-│   │   │   └── *.css                         # Component styles
-│   │   ├── App.tsx                           # Root component
-│   │   └── main.tsx                          # Entry point
-│   ├── index.html                            # HTML template
-│   ├── package.json                          # Dependencies
-│   ├── vite.config.js                        # Build configuration
-│   ├── tsconfig.json                         # TypeScript config
-│   └── README.md                             # Frontend documentation
+│   │   ├── pages/              # Page components
+│   │   │   ├── Login.tsx       # Authentication page
+│   │   │   ├── Dashboard.tsx   # Landing page
+│   │   │   ├── Editor.tsx      # Main editor page
+│   │   │   ├── Account.tsx     # User profile & projects
+│   │   │   └── Admin.tsx       # Admin panel
+│   │   ├── contexts/           # React contexts
+│   │   │   └── AuthContext.tsx # Authentication state
+│   │   ├── hooks/              # Custom hooks
+│   │   │   └── useLocalStorage.ts
+│   │   ├── utils/              # Utility functions
+│   │   │   ├── projectService.ts
+│   │   │   └── validation.ts
+│   │   ├── styles/             # CSS files
+│   │   ├── App.tsx             # Root component
+│   │   └── main.tsx            # Entry point
+│   ├── index.html              # HTML template
+│   ├── package.json            # Dependencies
+│   ├── vite.config.ts          # Build configuration
+│   ├── tsconfig.json           # TypeScript config
+│   └── eslint.config.js        # ESLint configuration
 │
 ├── 📚 ui-library/
 │   ├── src/
-│   │   ├── Button/                           # Button component
+│   │   ├── Button/             # Button component
 │   │   │   ├── Button.tsx
-│   │   │   └── Button.module.css
-│   │   ├── Modal/                            # Modal component
+│   │   │   ├── Button.module.css
+│   │   │   └── Button.test.tsx
+│   │   ├── Modal/              # Modal component
 │   │   │   ├── Modal.tsx
-│   │   │   └── Modal.css
-│   │   ├── FileUpload/                       # File upload component
+│   │   │   ├── Modal.css
+│   │   │   └── Modal.test.tsx
+│   │   ├── FileUpload/        # File upload component
 │   │   │   ├── FileUpload.tsx
-│   │   │   └── FileUpload.css
-│   │   └── index.ts                          # Component exports
-│   ├── package.json                          # Library config
-│   ├── vite.config.ts                        # Build configuration
-│   ├── tsconfig.json                         # TypeScript config
-│   └── README.md                             # Library documentation
+│   │   │   ├── FileUpload.css
+│   │   │   └── FileUpload.test.tsx
+│   │   ├── Canvas/             # Network canvas components
+│   │   │   ├── NetworkCanvas.tsx
+│   │   │   ├── Toolbar.tsx
+│   │   │   └── CustomNodes/
+│   │   │       └── CustomNode.tsx
+│   │   ├── Layout/             # Layout components
+│   │   │   └── Header.tsx
+│   │   ├── utils/              # Utility functions
+│   │   │   ├── connectionLogic.ts
+│   │   │   └── exportUtils.ts
+│   │   ├── index.ts            # Component exports
+│   │   └── setupTests.ts      # Test setup
+│   ├── package.json            # Library config
+│   ├── tsconfig.json           # TypeScript config
+│   ├── jest.config.ts         # Jest configuration
+│   └── eslint.config.js       # ESLint configuration
 │
-├── .gitignore                                # Git ignore rules
-├── SETUP.md                                  # Setup instructions
-├── NETWORK_LOGIC.md                          # Network validation rules
-├── CHECKLIST.md                              # Implementation checklist
-└── README.md                                 # This file
+├── photo_of_site/              # Screenshots
+│   ├── image1.png
+│   ├── image2.png
+│   ├── image3.png
+│   └── image4.png
+│
+└── README.md                    # This file
 ```
+
+## 🧪 Testing
+
+The project includes comprehensive test coverage:
+
+- **UI Library**: All components have unit tests with 90%+ coverage threshold
+- **Frontend**: Tests for utility functions and validation logic
+- **Test Framework**: Jest with React Testing Library
+- **Coverage**: Run `npm run test:coverage` to see coverage reports
+
+## 📸 Screenshots
+
+Screenshots of the application are available in the `photo_of_site/` directory:
+- `image1.png` - Dashboard view
+- `image2.png` - Network editor
+- `image3.png` - Project management
+- `image4.png` - Admin panel
 
 ## 🔄 Workflow Example
 
 1. **Login** with demo credentials
 2. **Navigate to Editor** to create a new network topology
-3. **Add Devices** by clicking "Add Node" and selecting device type
-4. **Configure Devices** with IP addresses and subnet masks in the right sidebar
+3. **Add Devices** by clicking device type buttons in the toolbar
+4. **Configure Devices** with IP addresses and subnet masks
 5. **Create Connections** by dragging from one device to another
-6. **Adjust Connection Properties**:
-   - Change connection type (Physical/Routing/Logical)
-   - Set status (Active/Inactive/Error)
-   - Add bandwidth information
-   - Add custom description
-7. **Validate and Save** - System checks compatibility and saves to localStorage
-8. **Export Project** - Download as JSON for backup or sharing
-9. **View Projects** - Go to Account page to manage all saved topologies
+6. **Validate and Save** - System checks compatibility and saves to localStorage
+7. **Export Project** - Download as JSON for backup or sharing
+8. **View Projects** - Go to Account page to manage all saved topologies
 
 ## 🧠 Connection Logic Details
 
@@ -281,14 +299,6 @@ When connecting devices (excluding Router and Network):
 - Examples:
   - ✅ `192.168.1.5/24` connects to `192.168.1.10/24` (same subnet)
   - ❌ `192.168.1.5/24` does NOT connect to `192.168.2.5/24` (different subnets)
-  - ✅ `10.0.0.5/16` connects to `10.0.5.10/16` (same /16 subnet)
-
-### Automatic Type Suggestion
-
-When you try to connect two devices, the system suggests the appropriate connection type:
-- Same subnet → Physical
-- Different subnets with Router → Routing
-- Virtual connections → Logical
 
 ## 🔐 Security & Limitations
 
@@ -309,74 +319,21 @@ When you try to connect two devices, the system suggests the appropriate connect
 - Use HTTPS/TLS encryption
 - Implement rate limiting and DDoS protection
 - Add input validation and sanitization
-- Implement CORS properly
 
-## 🚀 Future Enhancements
+## 📋 Code Quality
 
-Potential features for future versions:
-- [ ] Backend API with database persistence
-- [ ] Real-time collaboration (WebSocket support)
-- [ ] Device grouping and virtual networks
-- [ ] Network statistics and analytics dashboard
-- [ ] Connection bandwidth visualization
-- [ ] Network simulation and traffic modeling
-- [ ] Export to diagram formats (PNG, SVG, PDF)
-- [ ] Dark mode support
-- [ ] Mobile app version
-- [ ] Network device templates library
-- [ ] Drag-to-select multiple nodes
-- [ ] Undo/Redo functionality
-
-## 🤝 Contributing
-
-Contributions are welcome! To contribute:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Code Standards
-- Follow existing code style and conventions
-- Add comments for complex logic
-- Test features before submitting PR
-- Update documentation if needed
+- **TypeScript**: Full type safety, no `any` types allowed
+- **ESLint**: Configured with strict rules (2-space indent, no semicolons, no extra empty lines)
+- **Testing**: 90%+ coverage requirement for UI library components
+- **Code Style**: Consistent formatting and naming conventions
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## 👨‍💻 Author
 
 Created as a modern network visualization tool for IT professionals and network engineers.
-
-## 🤔 FAQ
-
-**Q: Can I save projects to a database?**
-A: Currently, projects are saved to browser localStorage only. To use a database, implement a backend API with Express.js, Node.js, or similar.
-
-**Q: Can multiple users collaborate in real-time?**
-A: Not yet. This feature would require WebSocket support, real-time synchronization, and a backend server.
-
-**Q: Is this suitable for managing production networks?**
-A: No, this is an educational tool. For real network management, use enterprise solutions like Cisco Prime Infrastructure, Juniper Contrail, or open-source alternatives like GNS3.
-
-**Q: How are device IPs validated?**
-A: The system calculates network addresses using CIDR notation and checks subnet compatibility. Invalid IP formats or duplicate addresses are rejected.
-
-**Q: Can I export the network diagram as an image?**
-A: Currently, you can export as JSON. Image export would require additional libraries like html2canvas or similar.
-
-**Q: What browsers are supported?**
-A: All modern browsers: Chrome/Chromium 90+, Firefox 88+, Safari 14+, Edge 90+
-
-## 📞 Support & Feedback
-
-For issues, questions, or feature requests:
-- 🐛 Open an [Issue](https://github.com/yourusername/Network-Topology-Visualizer/issues)
-- 💬 Check [Network Logic](./NETWORK_LOGIC.md) for technical details
-- 📖 Review [Setup Guide](./SETUP.md) for installation help
 
 ---
 
@@ -386,11 +343,4 @@ For issues, questions, or feature requests:
 
 ⭐ **Star this repo** if you find it useful!
 
-[Report Bug](https://github.com/yourusername/Network-Topology-Visualizer/issues) • [Request Feature](https://github.com/yourusername/Network-Topology-Visualizer/issues)
-
 </div>
-> **Лабораторная работа 6**
-> 
-> - [Архитектурные требования](./architecture.md)
-> - [Функциональные требования MVP](./mvp.md)
-> - [Исходный Pull Request](https://github.com/kry6t0n/SeTop/pull/1)

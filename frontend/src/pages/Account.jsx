@@ -1,80 +1,85 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import projectService from '../utils/projectService';
-import Header from '../components/Layout/Header';
-import '../styles/Account.css';
+import React, { useState, useEffect } from 'react'
+
+import { useNavigate } from 'react-router-dom'
+
+import Header from '../components/Layout/Header'
+import { useAuth } from '../contexts/AuthContext'
+import projectService from '../utils/projectService'
+import '../styles/Account.css'
 
 const Account = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const [userTopologies, setUserTopologies] = useState([]);
+  const { user } = useAuth()
+  const navigate = useNavigate()
+  const [userTopologies, setUserTopologies] = useState([])
   const [stats, setStats] = useState({
     totalProjects: 0,
     totalNodes: 0,
     totalEdges: 0
-  });
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  })
+  const [deleteConfirm, setDeleteConfirm] = useState(null)
 
   useEffect(() => {
     // Загружаем проекты при открытии страницы
     if (user?.id) {
-      loadProjects();
+      loadProjects()
     }
-  }, [user]);
+  }, [user])
 
   const loadProjects = () => {
     try {
-      const projects = projectService.getUserProjects(user.id);
-      setUserTopologies(projects);
+      const projects = projectService.getUserProjects(user.id)
+
+      setUserTopologies(projects)
       
-      const userStats = projectService.getUserStats(user.id);
-      setStats(userStats);
+      const userStats = projectService.getUserStats(user.id)
+
+      setStats(userStats)
     } catch (error) {
-      console.error('Error loading projects:', error);
+      console.error('Error loading projects:', error)
     }
-  };
+  }
 
   const handleDeleteProject = (projectId) => {
     try {
-      projectService.deleteProject(user.id, projectId);
-      loadProjects();
-      setDeleteConfirm(null);
+      projectService.deleteProject(user.id, projectId)
+      loadProjects()
+      setDeleteConfirm(null)
     } catch (error) {
-      console.error('Error deleting project:', error);
+      console.error('Error deleting project:', error)
     }
-  };
+  }
 
   const handleOpenProject = (projectId) => {
     // Сохраняем текущий проект ID в sessionStorage для загрузки в Editor
-    sessionStorage.setItem('currentProjectId', projectId);
-    navigate('/editor');
-  };
+    sessionStorage.setItem('currentProjectId', projectId)
+    navigate('/editor')
+  }
 
   const handleExportProject = (project) => {
     const dataStr = JSON.stringify({
       name: project.name,
       nodes: project.nodes,
       edges: project.edges
-    }, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    }, null, 2)
+    const dataBlob = new Blob([dataStr], { type: 'application/json' })
     
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(dataBlob);
-    link.download = `${project.name}-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
-  };
+    const link = document.createElement('a')
+
+    link.href = URL.createObjectURL(dataBlob)
+    link.download = `${project.name}-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(link.href)
+  }
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
-    });
-  };
+    })
+  }
 
   return (
     <div className="account-page">
@@ -195,7 +200,7 @@ const Account = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Account;
+export default Account

@@ -1,27 +1,29 @@
 // utils/projectService.js
 // Сервис для управления сохранением проектов
 
-const STORAGE_KEY = 'network_projects';
+const STORAGE_KEY = 'network_projects'
 
 export const projectService = {
   // Получить все проекты пользователя
   getUserProjects: (userId) => {
     try {
-      const allProjects = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-      return allProjects[userId] || [];
+      const allProjects = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
+
+      return allProjects[userId] || []
     } catch (error) {
-      console.error('Error loading projects:', error);
-      return [];
+      console.error('Error loading projects:', error)
+
+      return []
     }
   },
 
   // Сохранить новый проект
   saveProject: (userId, projectName, topology) => {
     try {
-      const allProjects = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      const allProjects = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
       
       if (!allProjects[userId]) {
-        allProjects[userId] = [];
+        allProjects[userId] = []
       }
 
       const newProject = {
@@ -32,10 +34,10 @@ export const projectService = {
         nodes: topology.nodes,
         edges: topology.edges,
         description: ''
-      };
+      }
 
       // Проверяем, не существует ли уже проект с таким именем
-      const existingIndex = allProjects[userId].findIndex(p => p.name === projectName);
+      const existingIndex = allProjects[userId].findIndex(p => p.name === projectName)
       
       if (existingIndex !== -1) {
         // Обновляем существующий проект
@@ -43,104 +45,110 @@ export const projectService = {
           ...allProjects[userId][existingIndex],
           ...newProject,
           createdAt: allProjects[userId][existingIndex].createdAt
-        };
+        }
       } else {
         // Добавляем новый проект
-        allProjects[userId].push(newProject);
+        allProjects[userId].push(newProject)
       }
 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(allProjects));
-      return newProject;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(allProjects))
+
+      return newProject
     } catch (error) {
-      console.error('Error saving project:', error);
-      throw new Error('Failed to save project');
+      console.error('Error saving project:', error)
+      throw new Error('Failed to save project')
     }
   },
 
   // Получить конкретный проект
   getProject: (userId, projectId) => {
     try {
-      const projects = projectService.getUserProjects(userId);
-      return projects.find(p => p.id === projectId);
+      const projects = projectService.getUserProjects(userId)
+
+      return projects.find(p => p.id === projectId)
     } catch (error) {
-      console.error('Error loading project:', error);
-      return null;
+      console.error('Error loading project:', error)
+
+      return null
     }
   },
 
   // Удалить проект
   deleteProject: (userId, projectId) => {
     try {
-      const allProjects = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      const allProjects = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
       
       if (allProjects[userId]) {
-        allProjects[userId] = allProjects[userId].filter(p => p.id !== projectId);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(allProjects));
-        return true;
+        allProjects[userId] = allProjects[userId].filter(p => p.id !== projectId)
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(allProjects))
+
+        return true
       }
       
-      return false;
+      return false
     } catch (error) {
-      console.error('Error deleting project:', error);
-      throw new Error('Failed to delete project');
+      console.error('Error deleting project:', error)
+      throw new Error('Failed to delete project')
     }
   },
 
   // Обновить проект
   updateProject: (userId, projectId, updates) => {
     try {
-      const allProjects = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      const allProjects = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
       
       if (allProjects[userId]) {
-        const projectIndex = allProjects[userId].findIndex(p => p.id === projectId);
+        const projectIndex = allProjects[userId].findIndex(p => p.id === projectId)
         
         if (projectIndex !== -1) {
           allProjects[userId][projectIndex] = {
             ...allProjects[userId][projectIndex],
             ...updates,
             updatedAt: new Date().toISOString()
-          };
+          }
           
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(allProjects));
-          return allProjects[userId][projectIndex];
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(allProjects))
+
+          return allProjects[userId][projectIndex]
         }
       }
       
-      return null;
+      return null
     } catch (error) {
-      console.error('Error updating project:', error);
-      throw new Error('Failed to update project');
+      console.error('Error updating project:', error)
+      throw new Error('Failed to update project')
     }
   },
 
   // Получить статистику пользователя
   getUserStats: (userId) => {
     try {
-      const projects = projectService.getUserProjects(userId);
-      let totalNodes = 0;
-      let totalEdges = 0;
+      const projects = projectService.getUserProjects(userId)
+      let totalNodes = 0
+      let totalEdges = 0
 
       projects.forEach(project => {
-        totalNodes += project.nodes?.length || 0;
-        totalEdges += project.edges?.length || 0;
-      });
+        totalNodes += project.nodes?.length || 0
+        totalEdges += project.edges?.length || 0
+      })
 
       return {
         totalProjects: projects.length,
         totalNodes,
         totalEdges,
         recentProject: projects[projects.length - 1] || null
-      };
+      }
     } catch (error) {
-      console.error('Error getting stats:', error);
+      console.error('Error getting stats:', error)
+
       return {
         totalProjects: 0,
         totalNodes: 0,
         totalEdges: 0,
         recentProject: null
-      };
+      }
     }
   }
-};
+}
 
-export default projectService;
+export default projectService

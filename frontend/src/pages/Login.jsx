@@ -1,99 +1,106 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
-import '../styles/Login.css';
+import React, { useState, useEffect } from 'react'
+
+import { useNavigate, Link } from 'react-router-dom'
+
+import { useAuth } from '../contexts/AuthContext'
+import '../styles/Login.css'
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [isRegister, setIsRegister] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const [isRegister, setIsRegister] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   
-  const { login, register, authError, clearError, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const { login, register, authError, clearError, isAuthenticated } = useAuth()
+  const navigate = useNavigate()
 
   // Если уже авторизован, перенаправляем на главную
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      navigate('/')
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate])
 
   // Очищаем ошибку при изменении режима
   useEffect(() => {
-    clearError();
-  }, [isRegister, clearError]);
+    clearError()
+  }, [isRegister, clearError])
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    clearError();
+    e.preventDefault()
+    setIsLoading(true)
+    clearError()
 
     // Валидация
     if (!username.trim() || !password.trim()) {
       // В режиме регистрации также проверяем email и confirmPassword
       if (isRegister && (!email.trim() || !confirmPassword.trim())) {
-        setIsLoading(false);
-        return;
+        setIsLoading(false)
+
+        return
       }
-      setIsLoading(false);
-      return;
+      setIsLoading(false)
+
+      return
     }
 
     // Проверяем совпадение паролей при регистрации
     if (isRegister && password !== confirmPassword) {
-      alert('Passwords do not match');
-      setIsLoading(false);
-      return;
+      alert('Passwords do not match')
+      setIsLoading(false)
+
+      return
     }
 
     if (isRegister) {
       if (password.length < 6) {
-        alert('Password must be at least 6 characters');
-        setIsLoading(false);
-        return;
+        alert('Password must be at least 6 characters')
+        setIsLoading(false)
+
+        return
       }
     }
 
     try {
-      let result;
+      let result
+
       if (isRegister) {
-        result = register(username, password, email);
+        result = register(username, password, email)
       } else {
-        result = login(username, password);
+        result = login(username, password)
       }
 
       if (result.success) {
         // Навигация произойдет автоматически из-за useEffect
       }
     } catch (err) {
-      console.error('Auth error:', err);
+      console.error('Auth error:', err)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const switchMode = () => {
-    setIsRegister(!isRegister);
-    clearError();
-    setEmail('');
-    setConfirmPassword('');
-  };
+    setIsRegister(!isRegister)
+    clearError()
+    setEmail('')
+    setConfirmPassword('')
+  }
 
   // Демо-аккаунты для удобства тестирования
   const demoAccounts = [
     { username: 'admin', password: 'admin123', role: 'Administrator' },
     { username: 'engineer', password: 'engineer123', role: 'Network Engineer' },
     { username: 'user', password: 'user123', role: 'Regular User' }
-  ];
+  ]
 
   const fillDemoAccount = (demoUser) => {
-    setUsername(demoUser.username);
-    setPassword(demoUser.password);
-    clearError();
-  };
+    setUsername(demoUser.username)
+    setPassword(demoUser.password)
+    clearError()
+  }
 
   return (
     <div className="login-container">
@@ -222,7 +229,7 @@ const Login = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

@@ -1,5 +1,6 @@
-import React, { memo } from 'react';
-import { Handle, Position } from 'reactflow';
+import React, { memo } from 'react'
+
+import { Handle, Position } from 'reactflow'
 
 const CustomNode = memo(({ data }) => {
   const getNodeStyle = (type) => {
@@ -9,9 +10,10 @@ const CustomNode = memo(({ data }) => {
       server: { background: '#e8f5e8', border: '2px solid #4caf50' },
       workstation: { background: '#fff3e0', border: '2px solid #ff9800' },
       network: { background: '#f0f4f8', border: '2px solid #64748b' },
-    };
-    return styles[data.type] || styles.router;
-  };
+    }
+
+    return styles[data.type] || styles.router
+  }
 
   const getIcon = (type) => {
     const icons = {
@@ -20,9 +22,10 @@ const CustomNode = memo(({ data }) => {
       server: '🖥️',
       workstation: '💻',
       network: '🌐',
-    };
-    return icons[type] || '🔘';
-  };
+    }
+
+    return icons[type] || '🔘'
+  }
 
   return (
     <div className="custom-node" style={getNodeStyle(data.type)}>
@@ -51,9 +54,9 @@ const CustomNode = memo(({ data }) => {
 
       <Handle type="source" position={Position.Bottom} />
     </div>
-  );
-});
+  )
+})
 
-CustomNode.displayName = 'CustomNode';
+CustomNode.displayName = 'CustomNode'
 
-export default CustomNode;
+export default CustomNode

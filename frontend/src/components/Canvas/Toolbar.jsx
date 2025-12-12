@@ -1,74 +1,83 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { exportToJson, importFromJson } from '../../utils/exportUtils';
-import { CONNECTION_TYPES, CONNECTION_STYLES, getConnectionStyle, getEdgeInfo } from '../../utils/connectionLogic';
+import React, { useRef, useState, useEffect } from 'react'
+
+import { CONNECTION_TYPES, CONNECTION_STYLES, getConnectionStyle, getEdgeInfo } from '../../utils/connectionLogic'
+import { exportToJson, importFromJson } from '../../utils/exportUtils'
 
 const Toolbar = ({ onAddNode, selectedNode, selectedEdge, nodes, edges, onSetNodes, onSetEdges }) => {
-  const fileInputRef = useRef(null);
-  const [editError, setEditError] = useState('');
-  const [localIP, setLocalIP] = useState('');
-  const [localMask, setLocalMask] = useState('');
+  const fileInputRef = useRef(null)
+  const [editError, setEditError] = useState('')
+  const [localIP, setLocalIP] = useState('')
+  const [localMask, setLocalMask] = useState('')
 
   // Синхронизируем локальное состояние с selectedNode
   useEffect(() => {
     if (selectedNode) {
-      setLocalIP(selectedNode.data.ip || '');
-      setLocalMask(selectedNode.data.mask || '');
-      setEditError('');
+      setLocalIP(selectedNode.data.ip || '')
+      setLocalMask(selectedNode.data.mask || '')
+      setEditError('')
     }
-  }, [selectedNode?.id]);
+  }, [selectedNode?.id])
 
   const handleExport = () => {
-    exportToJson({ nodes, edges });
-  };
+    exportToJson({ nodes, edges })
+  }
 
   const handleImport = (event) => {
-    const file = event.target.files[0];
+    const file = event.target.files[0]
+
     if (file) {
-      importFromJson(file, onSetNodes, onSetEdges);
+      importFromJson(file, onSetNodes, onSetEdges)
     }
-  };
+  }
 
   const validateIP = (ip) => {
-    if (!ip || ip.trim() === '') return true; // Пустое значение допустимо
-    const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
-    if (!ipRegex.test(ip)) return false;
-    const parts = ip.split('.');
+    if (!ip || ip.trim() === '') return true // Пустое значение допустимо
+    const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/
+
+    if (!ipRegex.test(ip)) return false
+    const parts = ip.split('.')
+
     return parts.every(part => {
-      const num = parseInt(part);
-      return num >= 0 && num <= 255;
-    });
-  };
+      const num = parseInt(part)
+
+      return num >= 0 && num <= 255
+    })
+  }
 
   const validateMask = (mask) => {
-    if (!mask || mask.trim() === '') return true; // Пустое значение допустимо
-    const maskRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
-    if (!maskRegex.test(mask)) return false;
-    const parts = mask.split('.');
+    if (!mask || mask.trim() === '') return true // Пустое значение допустимо
+    const maskRegex = /^(\d{1,3}\.){3}\d{1,3}$/
+
+    if (!maskRegex.test(mask)) return false
+    const parts = mask.split('.')
+
     return parts.every(part => {
-      const num = parseInt(part);
-      return num >= 0 && num <= 255;
-    });
-  };
+      const num = parseInt(part)
+
+      return num >= 0 && num <= 255
+    })
+  }
 
   const isIPDuplicate = (ip, nodeId) => {
-    if (!ip || ip.trim() === '') return false;
+    if (!ip || ip.trim() === '') return false
+
     return nodes.some(node => 
       node.id !== nodeId && 
       node.data.ip === ip && 
       node.data.type !== 'network'
-    );
-  };
+    )
+  }
 
   const deviceTypes = [
     { type: 'router', label: 'Router', icon: '🔄' },
     { type: 'switch', label: 'Switch', icon: '🔀' },
     { type: 'server', label: 'Server', icon: '🖥️' },
     { type: 'workstation', label: 'Workstation', icon: '💻' },
-  ];
+  ]
 
   const networkTypes = [
     { type: 'network', label: 'Network/Internet', icon: '🌐' },
-  ];
+  ]
 
   return (
     <div style={{
@@ -147,9 +156,9 @@ const Toolbar = ({ onAddNode, selectedNode, selectedEdge, nodes, edges, onSetNod
           }}
           onClick={() => {
             // Сохраняем nodes и edges в глобальную переменную
-            window.__editorNodes = nodes;
-            window.__editorEdges = edges;
-            window.dispatchEvent(new CustomEvent('saveProject'));
+            window.__editorNodes = nodes
+            window.__editorEdges = edges
+            window.dispatchEvent(new CustomEvent('saveProject'))
           }}
         >
           💾 Save Project
@@ -216,33 +225,36 @@ const Toolbar = ({ onAddNode, selectedNode, selectedEdge, nodes, edges, onSetNod
                     type="text"
                     value={localIP}
                     onChange={(e) => {
-                      const newIP = e.target.value;
-                      setLocalIP(newIP);
-                      setEditError('');
+                      const newIP = e.target.value
+
+                      setLocalIP(newIP)
+                      setEditError('')
 
                       // Валидируем только если не пусто
                       if (newIP.trim() === '') {
-                        setEditError('');
+                        setEditError('')
                       } else if (!validateIP(newIP)) {
-                        setEditError('Invalid IP format (e.g., 192.168.0.1)');
+                        setEditError('Invalid IP format (e.g., 192.168.0.1)')
                       } else if (isIPDuplicate(newIP, selectedNode.id)) {
-                        setEditError('This IP is already used');
+                        setEditError('This IP is already used')
                       } else {
-                        setEditError('');
+                        setEditError('')
                         // Обновляем реальные данные узла
-                        const updatedNode = nodes.find(n => n.id === selectedNode.id);
+                        const updatedNode = nodes.find(n => n.id === selectedNode.id)
+
                         if (updatedNode) {
-                          updatedNode.data.ip = newIP;
-                          onSetNodes([...nodes]);
+                          updatedNode.data.ip = newIP
+                          onSetNodes([...nodes])
                         }
                       }
                     }}
                     onBlur={() => {
                       // Сохраняем значение при потере фокуса
-                      const updatedNode = nodes.find(n => n.id === selectedNode.id);
+                      const updatedNode = nodes.find(n => n.id === selectedNode.id)
+
                       if (updatedNode && validateIP(localIP)) {
-                        updatedNode.data.ip = localIP;
-                        onSetNodes([...nodes]);
+                        updatedNode.data.ip = localIP
+                        onSetNodes([...nodes])
                       }
                     }}
                     placeholder="192.168.0.1"
@@ -265,31 +277,34 @@ const Toolbar = ({ onAddNode, selectedNode, selectedEdge, nodes, edges, onSetNod
                     type="text"
                     value={localMask}
                     onChange={(e) => {
-                      const newMask = e.target.value;
-                      setLocalMask(newMask);
-                      setEditError('');
+                      const newMask = e.target.value
+
+                      setLocalMask(newMask)
+                      setEditError('')
 
                       // Валидируем только если не пусто
                       if (newMask.trim() === '') {
-                        setEditError('');
+                        setEditError('')
                       } else if (!validateMask(newMask)) {
-                        setEditError('Invalid mask format (e.g., 255.255.255.0)');
+                        setEditError('Invalid mask format (e.g., 255.255.255.0)')
                       } else {
-                        setEditError('');
+                        setEditError('')
                         // Обновляем реальные данные узла
-                        const updatedNode = nodes.find(n => n.id === selectedNode.id);
+                        const updatedNode = nodes.find(n => n.id === selectedNode.id)
+
                         if (updatedNode) {
-                          updatedNode.data.mask = newMask;
-                          onSetNodes([...nodes]);
+                          updatedNode.data.mask = newMask
+                          onSetNodes([...nodes])
                         }
                       }
                     }}
                     onBlur={() => {
                       // Сохраняем значение при потере фокуса
-                      const updatedNode = nodes.find(n => n.id === selectedNode.id);
+                      const updatedNode = nodes.find(n => n.id === selectedNode.id)
+
                       if (updatedNode && validateMask(localMask)) {
-                        updatedNode.data.mask = localMask;
-                        onSetNodes([...nodes]);
+                        updatedNode.data.mask = localMask
+                        onSetNodes([...nodes])
                       }
                     }}
                     placeholder="255.255.255.0"
@@ -323,14 +338,16 @@ const Toolbar = ({ onAddNode, selectedNode, selectedEdge, nodes, edges, onSetNod
 
                 <button
                   onClick={() => {
-                    const newIP = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
-                    setLocalIP(newIP);
-                    const updatedNode = nodes.find(n => n.id === selectedNode.id);
+                    const newIP = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`
+
+                    setLocalIP(newIP)
+                    const updatedNode = nodes.find(n => n.id === selectedNode.id)
+
                     if (updatedNode) {
-                      updatedNode.data.ip = newIP;
-                      onSetNodes([...nodes]);
+                      updatedNode.data.ip = newIP
+                      onSetNodes([...nodes])
                     }
-                    setEditError('');
+                    setEditError('')
                   }}
                   style={{
                     width: '100%',
@@ -372,9 +389,9 @@ const Toolbar = ({ onAddNode, selectedNode, selectedEdge, nodes, edges, onSetNod
           <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '6px' }}>
             {(() => {
               // Получаем актуальное соединение из массива
-              const currentEdge = edges.find(e => e.id === selectedEdge.id) || selectedEdge;
-              const sourceNode = nodes.find(n => n.id === currentEdge.source);
-              const targetNode = nodes.find(n => n.id === currentEdge.target);
+              const currentEdge = edges.find(e => e.id === selectedEdge.id) || selectedEdge
+              const sourceNode = nodes.find(n => n.id === currentEdge.source)
+              const targetNode = nodes.find(n => n.id === currentEdge.target)
               
               return (
                 <>
@@ -403,11 +420,13 @@ const Toolbar = ({ onAddNode, selectedNode, selectedEdge, nodes, edges, onSetNod
                               ...ed,
                               connectionType: e.target.value,
                               style: getConnectionStyle(e.target.value, ed.data?.status || 'active')
-                            };
+                            }
                           }
-                          return ed;
-                        });
-                        onSetEdges(updatedEdges);
+
+                          return ed
+                        })
+
+                        onSetEdges(updatedEdges)
                       }}
                       style={{
                         width: '100%',
@@ -439,11 +458,13 @@ const Toolbar = ({ onAddNode, selectedNode, selectedEdge, nodes, edges, onSetNod
                                 status: e.target.value
                               },
                               style: getConnectionStyle(ed.connectionType, e.target.value)
-                            };
+                            }
                           }
-                          return ed;
-                        });
-                        onSetEdges(updatedEdges);
+
+                          return ed
+                        })
+
+                        onSetEdges(updatedEdges)
                       }}
                       style={{
                         width: '100%',
@@ -475,11 +496,13 @@ const Toolbar = ({ onAddNode, selectedNode, selectedEdge, nodes, edges, onSetNod
                                 ...ed.data,
                                 bandwidth: e.target.value
                               }
-                            };
+                            }
                           }
-                          return ed;
-                        });
-                        onSetEdges(updatedEdges);
+
+                          return ed
+                        })
+
+                        onSetEdges(updatedEdges)
                       }}
                       placeholder="1Gbps"
                       style={{
@@ -506,11 +529,13 @@ const Toolbar = ({ onAddNode, selectedNode, selectedEdge, nodes, edges, onSetNod
                                 ...ed.data,
                                 description: e.target.value
                               }
-                            };
+                            }
                           }
-                          return ed;
-                        });
-                        onSetEdges(updatedEdges);
+
+                          return ed
+                        })
+
+                        onSetEdges(updatedEdges)
                       }}
                       placeholder="Connection description"
                       style={{
@@ -529,8 +554,9 @@ const Toolbar = ({ onAddNode, selectedNode, selectedEdge, nodes, edges, onSetNod
 
                   <button
                     onClick={() => {
-                      const updatedEdges = edges.filter(ed => ed.id !== currentEdge.id);
-                      onSetEdges(updatedEdges);
+                      const updatedEdges = edges.filter(ed => ed.id !== currentEdge.id)
+
+                      onSetEdges(updatedEdges)
                     }}
                     style={{
                       width: '100%',
@@ -545,22 +571,22 @@ const Toolbar = ({ onAddNode, selectedNode, selectedEdge, nodes, edges, onSetNod
                       transition: 'all 0.2s'
                     }}
                     onMouseOver={(e) => {
-                      e.target.style.background = '#fecaca';
+                      e.target.style.background = '#fecaca'
                     }}
                     onMouseOut={(e) => {
-                      e.target.style.background = '#fee2e2';
+                      e.target.style.background = '#fee2e2'
                     }}
                   >
                     🗑️ Delete Connection
                   </button>
                 </>
-              );
+              )
             })()}
           </div>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Toolbar;
+export default Toolbar

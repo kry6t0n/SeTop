@@ -1,21 +1,23 @@
-import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import '../../styles/Header.css';
+import React from 'react'
+
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+
+import { useAuth } from '../../contexts/AuthContext'
+import '../../styles/Header.css'
 
 const Header = () => {
-  const { user, logout } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const { user, logout } = useAuth()
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+    logout()
+    navigate('/login')
+  }
 
   const getInitials = (username) => {
-    return username ? username.charAt(0).toUpperCase() : 'U';
-  };
+    return username ? username.charAt(0).toUpperCase() : 'U'
+  }
 
   return (
     <header className="header">
@@ -73,7 +75,7 @@ const Header = () => {
         </div>
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
