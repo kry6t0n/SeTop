@@ -4,11 +4,11 @@
 
 A modern, interactive web application for creating, editing, and managing network topologies with real-time validation, device management, and comprehensive connection logic.
 
-[![React](https://img.shields.io/badge/React-18.2+-blue?logo=react)](https://react.dev)
+[![React](https://img.shields.io/badge/React-19.2.1+-blue?logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript)](https://www.typescriptlang.org)
-[![React Router](https://img.shields.io/badge/React%20Router-v6-orange?logo=react-router)](https://reactrouter.com)
-[![ReactFlow](https://img.shields.io/badge/ReactFlow-v11.7-brightgreen?logo=react)](https://reactflow.dev)
-[![Vite](https://img.shields.io/badge/Vite-7.1-purple?logo=vite)](https://vitejs.dev)
+[![React Router](https://img.shields.io/badge/React%20Router-v7-orange?logo=react-router)](https://reactrouter.com)
+[![ReactFlow](https://img.shields.io/badge/ReactFlow-v12.8.3-brightgreen?logo=react)](https://reactflow.dev)
+[![Vite](https://img.shields.io/badge/Vite-7.2-purple?logo=vite)](https://vitejs.dev)
 
 [Features](#-key-features) • [Quick Start](#-getting-started) • [Architecture](#-architecture)
 
