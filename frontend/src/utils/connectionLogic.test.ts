@@ -66,7 +66,7 @@ describe('connectionLogic utilities', () => {
     expect(typeof suggested).toBe('string')
 
     const edge = { id: 'e', source: 's', target: 't', connectionType: null, data: {} }
-    const info = getEdgeInfo(edge, [source, target])
+    const info = getEdgeInfo(edge)
 
     expect(info).toHaveProperty('source')
     expect(info).toHaveProperty('target')

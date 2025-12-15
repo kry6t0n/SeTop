@@ -62,7 +62,11 @@ const Toolbar: FC<ToolbarProps> = ({
     const file = event.target.files?.[0]
 
     if (file) {
-      importFromJson(file, onSetNodes, onSetEdges)
+      importFromJson(
+        file,
+        onSetNodes as unknown as (nodes: unknown[]) => void,
+        onSetEdges as unknown as (edges: unknown[]) => void
+      )
     }
   }
 

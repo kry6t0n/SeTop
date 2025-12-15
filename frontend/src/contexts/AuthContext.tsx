@@ -185,7 +185,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
 
     // Создаём нового пользователя
     const newUser: UserWithPassword = {
-      id: String(Math.max(...USERS.map(u => parseInt(u.id, 10)), 0) + 1),
+      id: String(Math.max(...users.map(u => parseInt(u.id, 10)), 0) + 1),
       username,
       password, // В реальном приложении пароли должны быть хэшированы на бэкенде
       email,

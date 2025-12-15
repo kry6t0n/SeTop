@@ -24,6 +24,8 @@ import {
   getConnectionStyle
 } from '../utils/connectionLogic'
 
+import type { Node as ConnNode } from '../utils/connectionLogic'
+
 interface CustomNodeData {
   label: string
   type: string
@@ -65,7 +67,7 @@ const Flow: FC = () => {
         return
       }
 
-      const compatibility = canConnectNodes(sourceNode, targetNode)
+      const compatibility = canConnectNodes(sourceNode as unknown as ConnNode, targetNode as unknown as ConnNode)
 
       if (!compatibility.allowed) {
         alert(`❌ Cannot connect: ${compatibility.message}`)
@@ -73,12 +75,15 @@ const Flow: FC = () => {
         return
       }
 
-      const suggestedType = getSuggestedConnectionType(sourceNode, targetNode)
+      const suggestedType = getSuggestedConnectionType(sourceNode as unknown as ConnNode, targetNode as unknown as ConnNode)
+
+      const src = params.source as string
+      const tgt = params.target as string
 
       const newEdge: CustomEdgeType = {
-        id: `${params.source}-${params.target}-${Date.now()}`,
-        source: params.source,
-        target: params.target,
+        id: `${src}-${tgt}-${Date.now()}`,
+        source: src,
+        target: tgt,
         data: {
           status: 'active',
           description: '',
@@ -174,6 +179,67 @@ const NetworkCanvas: FC = () => {
       <Flow />
     </ReactFlowProvider>
   )
+}
+
+// Helper: create a node object for tests/logic reuse
+export const createNodeForType = (type: string, now = Date.now(), rand = Math.random()) => {
+  return {
+    id: `${type}-${now}`,
+    type: 'custom',
+    position: { x: Math.floor(rand * 400), y: Math.floor(rand * 400) },
+    data: {
+      label: `${type.charAt(0).toUpperCase() + type.slice(1)}`,
+      type: type,
+      ip: type === 'network' ? '' : `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+      mask: type === 'network' ? '' : '255.255.255.0',
+      status: 'active'
+    }
+  }
+}
+
+// Helper: build edge object or throw on invalid conditions. Mirrors onConnect logic.
+// Helper: build edge object or throw on invalid conditions. Mirrors onConnect logic.
+export const buildEdgeForConnection = (
+  params: Connection,
+  nodesList: ConnNode[],
+  canConnect: (a: ConnNode, b: ConnNode) => { allowed: boolean; message?: string } =
+    canConnectNodes as any,
+  suggest: (a: ConnNode, b: ConnNode) => string =
+    getSuggestedConnectionType as any,
+  styleGetter: (type: string, status: string) => React.CSSProperties =
+    getConnectionStyle as any
+): CustomEdgeType => {
+  const sourceNode = nodesList.find(n => n.id === params.source)
+  const targetNode = nodesList.find(n => n.id === params.target)
+
+  if (!sourceNode || !targetNode) {
+    throw new Error('Invalid connection')
+  }
+
+  const compatibility = canConnect(sourceNode as any, targetNode as any)
+
+  if (!compatibility.allowed) {
+    throw new Error(`Cannot connect: ${compatibility.message}`)
+  }
+
+  const suggestedType = suggest(sourceNode as any, targetNode as any)
+
+  const src = params.source as string
+  const tgt = params.target as string
+
+  const newEdge: CustomEdgeType = {
+    id: `${src}-${tgt}-${Date.now()}`,
+    source: src,
+    target: tgt,
+    data: {
+      status: 'active',
+      description: '',
+      connectionType: suggestedType
+    },
+    style: styleGetter(suggestedType, 'active')
+  }
+
+  return newEdge
 }
 
 export default NetworkCanvas

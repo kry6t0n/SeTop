@@ -43,7 +43,7 @@ export const CONNECTION_STATUS_STYLES = {
 }
 
 interface ConnectionStyle {
-  strokeDasharray: string
+  strokeDasharray?: string
   strokeWidth?: number
   stroke?: string
   opacity?: number
@@ -57,7 +57,7 @@ interface NodeData {
   [key: string]: unknown
 }
 
-interface Node {
+export interface Node {
   id: string
   data?: NodeData
 }
@@ -69,13 +69,15 @@ interface CanConnectResult {
 
 export const getConnectionStyle = (connectionType: string = 'physical', status: string = 'active'): ConnectionStyle => {
   const typeStyle = (CONNECTION_STYLES as Record<string, ConnectionStyle>)[connectionType] || CONNECTION_STYLES.physical
-  const statusStyle = (CONNECTION_STATUS_STYLES as Record<string, ConnectionStyle>)[status] || CONNECTION_STATUS_STYLES.active
+  const statusStyle = ((CONNECTION_STATUS_STYLES as Record<string, unknown>)[status] || CONNECTION_STATUS_STYLES.active) as ConnectionStyle
+
+  const dash = status === 'error' ? statusStyle.strokeDasharray : typeStyle.strokeDasharray
 
   return {
     ...typeStyle,
     stroke: statusStyle.stroke,
     opacity: statusStyle.opacity,
-    strokeDasharray: status === 'error' ? statusStyle.strokeDasharray : typeStyle.strokeDasharray
+    strokeDasharray: dash ?? typeStyle.strokeDasharray
   }
 }
 
@@ -167,7 +169,7 @@ interface EdgeInfo {
   target?: string
 }
 
-interface Edge {
+export interface Edge {
   connectionType?: string
   source?: string
   target?: string
