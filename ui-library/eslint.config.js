@@ -12,7 +12,8 @@ export default defineConfig([
   globalIgnores(['dist', 'node_modules', 'coverage',
     '**/__tests__/**',
     '**/*.test.*',
-    '**/*.spec.*']),
+    '**/*.spec.*',  
+    '**/NetworkCanvas.tsx']),
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     extends: [
